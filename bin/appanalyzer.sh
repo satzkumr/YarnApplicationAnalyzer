@@ -61,7 +61,7 @@ getContainers()
 
 
 	printf "\n\n"
-	echo "Containers and Allocated Nodes: "
+	echo "Allocated Containers and  Nodes: "
         echo "=============================== "
         printf "\n"
 
@@ -72,6 +72,26 @@ getContainers()
 	grep "SchedulerNode: Assigned container" yarn-mapr-resourcemanager-sat-node5.log | grep 1489052008885_0015_01 | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}'
 
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+	printf "\n"
+	
+	totalContainers=`grep "SchedulerNode: Assigned container" yarn-mapr-resourcemanager-sat-node5.log | grep 1489052008885_0015_01 | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}' | wc -l`
+	
+	printf "Total Number of Containers Allocated: $totalContainers"
+
+	printf "\n\n"
+        echo "Released Containers and  Nodes: "
+        echo "=============================== "
+        printf "\n"
+
+
+
+        echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
+
+        grep "SchedulerNode: Released container" yarn-mapr-resourcemanager-sat-node5.log | grep 1489052008885_0015_01 | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $19}'
+
+        echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
+
 }
 
 #Execution starts here
