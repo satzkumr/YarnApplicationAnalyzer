@@ -1,10 +1,11 @@
 # Yarn Application Analyzer tool for analyzing yarn-applications
 
-#-------------------------------------------------------------------------------------------
+Repo Details
+============
+
 Created By : Sathishkumar (satz)
 Description: Shell-code that parses Yarn resource manager logs and grabs application details
 Contact    : mrsathishkumar12@gmail.com
-#-------------------------------------------------------------------------------------------
 
 About Application
 =================
