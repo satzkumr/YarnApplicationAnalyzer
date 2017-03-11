@@ -6,6 +6,7 @@ ANALYZER_HOME=/home/mapr/myProjects/YarnApplicationAnalyzer
 
 source $ANALYZER_HOME/etc/analyzerEnv.sh
 
+logFile="yarn-mapr-resourcemanager-sat-node5.log"
 
 #Usage Function
 
@@ -33,6 +34,7 @@ validate_id()
 getContainers()
 {
 	appid=$1
+	containers=(`echo "$appid" | awk -F '_' '{print $2 "_" $3 "_0*"}'`)
 	counter=0
 	printf "\n\n"
 	echo "-------------------------------------------------------------------------------------------------"	
@@ -44,21 +46,17 @@ getContainers()
 	echo "Master Container On: "
 	echo "==================== "
 	printf "\n"
-	grep $appid yarn-mapr-resourcemanager-sat-node5.log | grep "MasterContainer:"
+	grep $appid $logFile | grep "MasterContainer:"
 
 
 	printf "\n\n"
 
         echo "Containers: "
         echo "=========== "	
-	printf "\n\n"
-
-	#echo "-------------------------------------------------------------------------------------------------"
-        #echo "|   Time stamp             |  Operation        |   Status   |                                     | Node                                   |"
-	#echo "-------------------------------------------------------------------------------------------------"
-
-	grep application_1489052008885_0015 yarn-mapr-resourcemanager-sat-node5.log | grep CONTAINERID | awk -F ' ' ' { print $1 " |" $2 "\t |" $7 "\t |" $10 "\t |" $12 "   |" }'
-
+	printf "\n"
+	echo "-------------------------------------------------------------------------------------------------------------------------------------"
+	grep $appid  $logFile | grep CONTAINERID | awk -F ' ' ' { print $1 " |" $2 "\t |" $7 "\t |" $10 "\t |" $12 "   |" }'
+	echo "-------------------------------------------------------------------------------------------------------------------------------------"
 
 	printf "\n\n"
 	echo "Allocated Containers and  Nodes: "
@@ -66,19 +64,15 @@ getContainers()
         printf "\n"
 
 
-
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
-
-	grep "SchedulerNode: Assigned container" yarn-mapr-resourcemanager-sat-node5.log | grep 1489052008885_0015_01 | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}'
+	grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}'
 
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
 	printf "\n"
-	
-	totalContainers=`grep "SchedulerNode: Assigned container" yarn-mapr-resourcemanager-sat-node5.log | grep 1489052008885_0015_01 | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}' | wc -l`
+	totalContainers=`grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}' | wc -l`
 	
 	printf "Total Number of Containers Allocated: $totalContainers"
-
 	printf "\n\n"
         echo "Released Containers and  Nodes: "
         echo "=============================== "
@@ -88,10 +82,21 @@ getContainers()
 
         echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
-        grep "SchedulerNode: Released container" yarn-mapr-resourcemanager-sat-node5.log | grep 1489052008885_0015_01 | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $19}'
+        grep "SchedulerNode: Released container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $19}'
 
         echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
+
+	printf "\n\n"
+        echo "Application State changes: "
+        echo "========================= "
+        printf "\n"
+
+
+
+        echo "-----------------------------------------------------------------------------------------"
+	grep $appid  $logFile | grep "State change" | awk -F ' ' '{print $1 "|" $2 " | " $5 " | " $9 "-->" $11}'
+	echo "-----------------------------------------------------------------------------------------"
 }
 
 #Execution starts here
