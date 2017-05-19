@@ -7,7 +7,7 @@ ANALYZER_HOME=/home/mapr/myProjects/YarnApplicationAnalyzer
 source $ANALYZER_HOME/etc/analyzerEnv.sh
 
 appid=$1
-logFile="yarn-mapr-resourcemanager-sat-node5.log"
+logFile=$2
 containers=(`echo "$appid" | awk -F '_' '{print $2 "_" $3 "_0"}'`)
 
 
