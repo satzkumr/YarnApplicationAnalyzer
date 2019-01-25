@@ -2,7 +2,7 @@
 
 #Sourcing environment variables
 
-ANALYZER_HOME=/home/mapr/myProjects/YarnApplicationAnalyzer
+ANALYZER_HOME=/home/sathish/sathish-pub-git/YarnApplicationAnalyzer
 
 source $ANALYZER_HOME/etc/analyzerEnv.sh
 
@@ -56,7 +56,7 @@ getContainers()
         echo "=============================== "
         printf "\n"
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
-	grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}'
+	grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $14 " | " $17}'
 
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
@@ -73,7 +73,7 @@ getContainers()
 
 
         echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
-        grep "SchedulerNode: Released container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $19}'
+        grep "SchedulerNode: Released container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $14 " | " $18}'
         echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
 
