@@ -8,6 +8,7 @@ source $ANALYZER_HOME/etc/analyzerEnv.sh
 
 appid=$1
 logFile=$2
+echo $2
 containers=(`echo "$appid" | awk -F '_' '{print $2 "_" $3 "_0"}'`)
 
 
@@ -23,11 +24,10 @@ usage()
 validate_id()
 {
 
-	printf "\n\n"
 	#App ID and path validations goes here!
-        #echo "-------------------------------------------------------------------------------------------------"
-	#echo "Running check for Application: $1 in logs at $2"
-	#echo "-------------------------------------------------------------------------------------------------"
+        echo "-------------------------------------------------------------------------------------------------"
+	echo "Gathering information for Application: $1 from the logs $2"
+	echo "-------------------------------------------------------------------------------------------------"
 
 }
 
@@ -41,14 +41,13 @@ getContainers()
 	echo "Master Container On: "
 	echo "==================== "
 	printf "\n"
-	grep $appid $logFile | grep "MasterContainer:"
-
+	grep --no-filename $appid $logFile | grep "MasterContainer:"
 	printf "\n\n"
         echo "Containers: "
         echo "=========== "	
 	printf "\n"
 	echo "-------------------------------------------------------------------------------------------------------------------------------------"
-	grep $appid  $logFile | grep CONTAINERID | awk -F ' ' ' { print $1 " |" $2 "\t |" $7 "\t |" $10 "\t |" $12 "   |" }'
+	grep --no-filename $appid  $logFile | grep CONTAINERID | awk -F ' ' ' { print $1 " |" $2 "\t |" $7 "\t |" $10 "\t |" $12 "   |" }'
 	echo "-------------------------------------------------------------------------------------------------------------------------------------"
 
 	printf "\n\n"
@@ -56,12 +55,11 @@ getContainers()
         echo "=============================== "
         printf "\n"
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
-	grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $14 " | " $17}'
-
+	grep --no-filename "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $14 " | " $17}'
 	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
-	containerIds=(`grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $7 "\n"}'`)
-	totalContainers=`grep "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}' | wc -l`
+	containerIds=(`grep --no-filename "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $7 "\n"}'`)
+	totalContainers=`grep --no-filename "SchedulerNode: Assigned container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $15 " | " $18}' | wc -l`
 	
 	printf "\n"
 	printf "Total Number of Containers Allocated: $totalContainers"
@@ -73,8 +71,8 @@ getContainers()
 
 
         echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
-        grep "SchedulerNode: Released container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $14 " | " $18}'
-        echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
+        grep --no-filename "SchedulerNode: Released container" $logFile | grep $containers | awk -F ' ' '{ print $1 $2 " | " $5 " | "  $7 " | " $10 $11 $12 $13 " | " $14 " | " $18}'
+	echo "---------------------------------------------------------------------------------------------------------------------------------------------------------"
 
 
 }
@@ -92,7 +90,7 @@ getAppStateChanges()
         
 	printf "\n"
         echo "-----------------------------------------------------------------------------------------"
-	grep $appid  $logFile | grep "State change" | awk -F ' ' '{print $1 "|" $2 " | " $5 " | " $9 "-->" $11}'
+	grep --no-filename $appid  $logFile | grep "State change" | awk -F ' ' '{print $1 "|" $2 " | " $5 " | " $9 "-->" $11}'
 	echo "-----------------------------------------------------------------------------------------"
 
 }
@@ -107,13 +105,14 @@ getContainerStateChanges()
         echo "Container  State changes: "
         echo "========================= "
         printf "\n"	
+	grep -q --no-filename "SchedulerNode: Assigned container" $logFile | grep "$containers" | awk -F ' ' '{ print $7 }'
 
-	for cid in `grep "SchedulerNode: Assigned container" $logFile | grep "$containers" | awk -F ' ' '{ print $7 }'`
+	for cid in `grep --no-filename "SchedulerNode: Assigned container" $logFile | grep "$containers" | awk -F ' ' '{ print $7 }'`
 	do
 		echo "-----------------------------------------------------------------------------------------"
 		echo "$cid"; 
 		echo "-----------------------------------------------------------------------------------------"
-        	grep $cid $logFile  | grep "Container Transitioned" | grep "$containers" |  awk -F ' ' '{ print $1 "|" $2 " | " $5 " | " $9 " -->" $11 }'
+        	grep --no-filename $cid $logFile  | grep "Container Transitioned" | grep "$containers" |  awk -F ' ' '{ print $1 "|" $2 " | " $5 " | " $9 " -->" $11 }'
 		printf "\n"
 	done;
 	
@@ -131,8 +130,8 @@ getQueueDetails()
         echo "-------------------------------------------------------------------------------------------------"
         echo "| Time Stamp           |   State  |          Applicatoin ID       | User | Queue name| Curr Apps|"
         echo "-------------------------------------------------------------------------------------------------"
-        grep "in queue" $logFile | grep $appid | awk -F ' ' '{ print $1 $2 " | " $5 " | " $7 "|"$10 " | " $13 "  | " $NF }'
-        echo "-------------------------------------------------------------------------------------------------"
+        grep --no-filename "in queue" $logFile | grep $appid | awk -F ' ' '{ print $1 $2 " | " $5 " | " $7 "|"$10 " | " $13 "  | " $NF }'
+	echo "-------------------------------------------------------------------------------------------------"
 
 }
 
